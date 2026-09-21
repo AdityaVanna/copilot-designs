@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --page:#ffffff;--surface:#ffffff;
+  --g50:#f7f8fa;--g100:#e2e2e2;--g200:#cfcfcf;--g300:#9ca3af;--g400:#6b7280;--g500:#4b5563;--g700:#1f2937;--g800:#1f1f1f;--g900:#111111;
+  --violet-50:#f1ebfd;--violet-100:#d3c2f7;--violet-400:#8d61eb;--violet-500:#703ae6;
+  --rose-50:#ffe6f2;--rose-500:#ff007a;
+  --ok-fg:#0b7a63;--ok-bg:rgba(16,185,129,.1);--mark-ok:#10b981;
+  --danger-fg:#c9333b;--danger-bg:rgba(252,84,87,.1);--mark-bad:#fc5457;
+  --vm-fg:#5f2fd0;--vm-bg:rgba(112,58,230,.1);
+  --ve-fg:#0b7a63;--ve-bg:rgba(11,122,99,.1);
+  --vf-fg:#8a5a06;--vf-bg:rgba(245,158,11,.14);
+  --vw-fg:#4b5563;--vw-bg:rgba(102,112,133,.12);
+  --z-danger:#e03e42;--z-warn:#c98214;--z-caution:#1c7c83;--z-healthy:#0b8f68;--bar-track:#ececf0;
+  --navbg:#ffffff;--navborder:#ebebeb;--navtext:#111111;
+  --gradient:linear-gradient(135deg,#fc5457 10%,#703ae6 80%);
+  --heading:#1f1f1f;--paragraph:#4b5563;
+}
+[data-vt="dark"]{
+  --page:#111111;--surface:#1c1c24;
+  --g50:#27272a;--g100:#333333;--g200:#52525b;--g300:#8b8b96;--g400:#a1a1aa;--g500:#c8c8d0;--g700:#e4e4e7;--g800:#f4f4f5;--g900:#fafafa;
+  --violet-50:#2a1a3e;--violet-100:#3b2560;--violet-400:#a686f2;--violet-500:#9a72f0;
+  --rose-50:#3a0f27;--rose-500:#ff3d91;
+  --ok-fg:#3fc0a3;--ok-bg:rgba(63,192,163,.1);--mark-ok:#3fc0a3;
+  --danger-fg:#f0666e;--danger-bg:rgba(240,102,110,.1);--mark-bad:#fc5457;
+  --vm-fg:#a686f2;--vm-bg:rgba(154,114,240,.14);
+  --ve-fg:#3fc0a3;--ve-bg:rgba(63,192,163,.12);
+  --vf-fg:#dfa24a;--vf-bg:rgba(223,162,74,.12);
+  --vw-fg:#a8b0c0;--vw-bg:rgba(168,176,192,.11);
+  --z-danger:#f0666e;--z-warn:#dfa24a;--z-caution:#4fd3dd;--z-healthy:#3fc0a3;--bar-track:#2c2c34;
+  --navbg:#111111;--navborder:rgba(255,255,255,.06);--navtext:#ffffff;
+  --heading:#fafafa;--paragraph:#c8c8d0;
+}
+html,body{margin:0;padding:0;background:var(--page);}
+*{box-sizing:border-box;}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;}
+textarea,input{font:inherit;color:inherit;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+a{color:var(--violet-500);text-decoration:none;}
+a:hover{color:var(--violet-500);text-decoration:underline;}
+@keyframes vsp{to{transform:rotate(360deg)}}
+@keyframes vpl{0%,100%{opacity:.35}50%{opacity:1}}
+.vs{scrollbar-width:thin;scrollbar-color:#a7a7a7 transparent;}
+.vs::-webkit-scrollbar{width:6px;height:6px}
+.vs::-webkit-scrollbar-track{background:transparent}
+.vs::-webkit-scrollbar-thumb{background:#a7a7a7;border-radius:3px}
+.rail .vs{scrollbar-width:none}
+.rail .vs::-webkit-scrollbar{width:0}
+.rail .vs:hover{scrollbar-width:thin}
+.rail .vs:hover::-webkit-scrollbar{width:6px}
+.auto-popwrap,.wallet-wrap{position:relative;overflow:visible}
+.auto-pop,.wallet-pop{
+  position:absolute;z-index:50;
+  border:1px solid var(--g100);border-radius:8px;background:var(--surface);padding:12px;
+}
+.auto-pop{left:calc(100% + 10px);top:0;width:268px;box-shadow:0 7px 15px rgba(0,0,0,.08),0 28px 28px rgba(0,0,0,.07)}
+.wallet-pop{right:0;top:calc(100% + 8px);width:220px}
+img.tok{width:20px;height:20px;border-radius:999px;object-fit:cover;display:block;background:#f7f7f7}
+.num{font-variant-numeric:tabular-nums}
+.rail{
+  flex:none;position:relative;z-index:2;width:292px;
+  border-right:1px solid var(--g100);
+  transition:width .32s cubic-bezier(.4,0,.2,1);
+}
+.rail.is-collapsed,
+.rail[data-rail="collapsed"]{width:60px}
+.rail-full{
+  position:absolute;inset:0 auto 0 0;width:292px;
+  display:flex;flex-direction:column;min-height:100%;
+  transition:opacity .22s ease;
+}
+.rail-mini{
+  position:absolute;inset:0 auto 0 0;width:60px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 0;
+  transition:opacity .18s ease;
+}
+.chat-stage{
+  flex:1;min-width:0;min-height:0;
+  display:grid;
+  grid-template-rows:minmax(0,1fr) auto minmax(0,1fr);
+  transition:grid-template-rows .48s cubic-bezier(.22,1,.36,1);
+}
+.chat-stage.is-thread,
+.chat-stage[data-stage="is-thread"]{
+  grid-template-rows:minmax(0,1fr) auto 0fr;
+}
+.hero-copy,.chip-row{
+  overflow:hidden;
+  transition:max-height .4s ease,opacity .28s ease,margin .4s ease,padding .4s ease;
+}
+.recent-item{
+  flex:1;min-width:0;text-align:left;display:block;padding:8px 10px;
+  font-size:14px;line-height:21px;font-weight:400;color:var(--paragraph);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:8px;cursor:pointer;
+}
+.recent-item:hover{color:var(--heading);background:var(--g50)}
+.recent-row{
+  position:relative;display:flex;align-items:center;gap:2px;border-radius:8px;margin:0 -6px;padding:0 2px;
+}
+.recent-row:hover,.recent-row.is-menu{background:var(--g50)}
+.recent-row:hover .recent-item,.recent-row.is-menu .recent-item{color:var(--heading)}
+.recent-fly .recent-item{
+  width:100%;
+}
+.recent-more{
+  flex:none;width:22px;height:22px;border-radius:6px;opacity:0;
+  display:flex;align-items:center;justify-content:center;color:var(--g400);
+}
+.recent-row:hover .recent-more,.recent-row.is-menu .recent-more{opacity:1}
+.recent-more:hover{background:var(--g100);color:var(--heading)}
+.recent-menu{
+  position:absolute;left:calc(100% + 8px);top:0;z-index:60;width:168px;
+  border:1px solid var(--g100);border-radius:12px;background:var(--surface);padding:6px;
+  box-shadow:0 7px 15px rgba(0,0,0,.08),0 28px 28px rgba(0,0,0,.07);
+}
+.recent-menu button{
+  width:100%;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;
+  font-size:13px;line-height:20px;color:var(--heading);text-align:left;
+}
+.recent-menu button:hover{background:var(--g50)}
+.recent-menu .danger{color:var(--danger-fg)}
+.recent-menu .danger:hover{background:var(--danger-bg)}
+.rail-link{
+  width:100%;display:flex;align-items:center;gap:10px;
+  padding:8px 10px;margin:0 -10px;border-radius:8px;
+  font-size:14px;line-height:21px;font-weight:500;color:var(--heading);
+}
+.rail-link:hover{background:var(--g50)}
+.mini-state{
+  width:34px;min-height:34px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;line-height:16px;font-weight:600;
+}
+@keyframes chatgpt-pen-wiggle{
+  0%{transform:rotate(0deg)}
+  20%{transform:rotate(-9deg) translate(-1px,1px)}
+  45%{transform:rotate(5deg) translate(1px,-.5px)}
+  70%{transform:rotate(-3deg)}
+  100%{transform:rotate(0deg)}
+}
+@keyframes rewind-tick{
+  0%{transform:rotate(0deg)}
+  50%{transform:rotate(-30deg)}
+  100%{transform:rotate(0deg)}
+}
+.pen-writer{transform-origin:8px 16px}
+button:hover .pen-writer{animation:chatgpt-pen-wiggle .65s cubic-bezier(.34,1.56,.64,1)}
+.history-arc{transform-origin:12px 12px}
+button:hover .history-arc{animation:rewind-tick .5s ease-in-out}
+.mini-hint{
+  display:none;position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);
+  z-index:55;white-space:nowrap;border-radius:999px;padding:8px 14px;
+  background:var(--surface);border:1px solid var(--g100);color:var(--heading);
+  font-size:13px;line-height:20px;font-weight:600;
+  box-shadow:0 7px 15px rgba(0,0,0,.08);
+}
+.mini-recent:hover .mini-hint{display:block}
+.recent-fly{
+  position:absolute;left:calc(100% + 10px);top:0;z-index:60;width:228px;
+  border:1px solid var(--g100);border-radius:16px;background:var(--surface);padding:10px 8px 8px;
+  box-shadow:0 7px 15px rgba(0,0,0,.08),0 28px 28px rgba(0,0,0,.07);
+}
+.recent-fly .fly-label{
+  padding:4px 10px 8px;font-size:12px;line-height:18px;font-weight:600;color:var(--g400);
+}
+.recent-fly .recent-item{padding:8px 10px}
+@media (prefers-reduced-motion:reduce){
+  .rail,.rail-full,.rail-mini,.chat-stage,.hero-copy,.chip-row{transition:none}
+  button:hover .pen-writer,button:hover .history-arc{animation:none}
+}
+</style>
+</helmet>
+
+<div data-vt="{{ theme }}" style="display:flex;flex-direction:column;height:100vh;min-height:640px;background:var(--page);color:var(--g800);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:14px;line-height:21px;-webkit-font-smoothing:antialiased">
+
+<nav style="flex:none;height:64px;background:var(--navbg);border-bottom:1px solid var(--navborder);display:flex;align-items:center;gap:16px;padding:0 20px">
+  <img src="{{ logoSrc }}" alt="Vanna" style="height:32px;width:auto;flex:none" />
+  <div style="flex:1"></div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <a href="#" style="border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--navtext);text-decoration:none" style-hover="color:#ff007a">Portfolio</a>
+    <a href="#" style="border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--navtext);text-decoration:none" style-hover="color:#ff007a">Earn</a>
+    <div style="display:flex;gap:4px;padding:4px;border:1px solid var(--navborder);border-radius:8px">
+      <a href="#" style="border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--navtext);text-decoration:none" style-hover="color:#ff007a">Margin</a>
+      <a href="#" style="border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--navtext);text-decoration:none;display:flex;align-items:center;gap:6px" style-hover="color:#ff007a">Trade<svg width="10" height="6" viewBox="0 0 18 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 1L9 9 1 1"></path></svg></a>
+      <a href="#" style="border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--navtext);text-decoration:none" style-hover="color:#ff007a">Farm</a>
+    </div>
+    <a href="#" style="border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;color:var(--navtext);text-decoration:none" style-hover="color:#ff007a">Analytics</a>
+    <a href="#" style="border-radius:8px;padding:9px 16px;font-size:14px;font-weight:600;background:var(--rose-50);color:var(--rose-500);text-decoration:none">Copilot</a>
+  </div>
+  <div style="flex:1"></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <sc-if value="{{ hasWallet }}" hint-placeholder-val="{{ true }}">
+      <div class="wallet-wrap">
+        <button type="button" onClick="{{ toggleWalletMenu }}" style="display:flex;align-items:center;gap:8px;border:1px solid var(--navborder);border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--navtext)" style-hover="border-color:#ff007a"><span style="width:7px;height:7px;border-radius:999px;background:var(--mark-ok);display:block"></span><span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px">GD4BQR…NPDH</span></button>
+        <sc-if value="{{ walletMenu }}" hint-placeholder-val="{{ false }}">
+          <div class="wallet-pop">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+              <span style="font-size:13px;line-height:20px;font-weight:600;color:var(--g900)">Dark mode</span>
+              <button type="button" onClick="{{ toggleTheme }}" role="switch" aria-label="Dark mode" style="flex:none;width:36px;height:20px;border-radius:999px;padding:2px;background:{{ themeTrack }};display:flex;justify-content:{{ themeJust }}"><span style="width:16px;height:16px;border-radius:999px;background:#ffffff;display:block"></span></button>
+            </div>
+            <div style="font-size:11px;line-height:17px;color:var(--g400);margin-top:6px">HTML preview only. On the site, theme stays with the wallet.</div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+    <sc-if value="{{ noWallet }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ connect }}" style="border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;color:#fff;background:linear-gradient(135deg,#fc5457 10%,#703ae6 80%)">Connect Wallet</button>
+    </sc-if>
+  </div>
+</nav>
+
+<div style="flex:1;min-height:0;display:flex">
+
+<aside class="rail {{ railCls }}" data-rail="{{ railCls }}" style="overflow:{{ railOverflow }}">
+  <div class="rail-mini" style="opacity:{{ miniOp }};pointer-events:{{ miniPe }};visibility:{{ miniVis }}">
+    <button onClick="{{ toggleRail }}" title="Expand" style="width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--g500)" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"></rect><path d="M9 4v16"></path></svg></button>
+    <button onClick="{{ newChat }}" title="New chat" class="mini-state" style="color:var(--g500)" style-hover="background:var(--g50);color:var(--heading)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><g class="pen-writer"><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"></path><path d="m15 5 3 3"></path></g></svg></button>
+    <div class="auto-popwrap">
+      <button type="button" onClick="{{ toggleAutoMenu }}" title="{{ autoTitle }}" class="mini-state" style="color:{{ autoIcoFg }};background:{{ autoIcoBg }}">{{ autoState }}</button>
+      <sc-if value="{{ autoMenuMini }}" hint-placeholder-val="{{ false }}">
+        <div class="auto-pop">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px">
+            <span style="font-size:13px;line-height:20px;font-weight:600;color:var(--g900)">Auto-approve</span>
+            <button type="button" onClick="{{ toggleAuto }}" role="switch" style="flex:none;width:36px;height:20px;border-radius:999px;padding:2px;background:{{ autoTrack }};display:flex;justify-content:{{ autoJust }}"><span style="width:16px;height:16px;border-radius:999px;background:#ffffff;display:block"></span></button>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button onClick="{{ setDefaults }}" style="flex:1;border-radius:999px;border:1px solid {{ dfBd }};background:{{ dfBg }};color:{{ dfFg }};padding:5px 10px;font-size:12px;font-weight:600">Default</button>
+            <button onClick="{{ setCustom }}" style="flex:1;border-radius:999px;border:1px solid {{ cuBd }};background:{{ cuBg }};color:{{ cuFg }};padding:5px 10px;font-size:12px;font-weight:600">Custom</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+            <label style="display:block;min-width:0">
+              <span style="font-size:11px;line-height:17px;font-weight:600;color:var(--g400)">per tx</span>
+              <span style="margin-top:3px;display:flex;align-items:center;gap:2px;border:1px solid {{ fieldBd }};background:{{ fieldBg }};border-radius:999px;padding:0 10px">
+                <span style="font-size:12px;color:var(--g300)">$</span>
+                <input type="number" value="{{ capTx }}" readOnly="{{ locked }}" onChange="{{ onCapTx }}" aria-label="Per transaction cap in USD" style="width:100%;min-width:0;border:0;background:transparent;outline:none;padding:5px 0;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:{{ fieldFg }}" />
+              </span>
+            </label>
+            <label style="display:block;min-width:0">
+              <span style="font-size:11px;line-height:17px;font-weight:600;color:var(--g400)">per day</span>
+              <span style="margin-top:3px;display:flex;align-items:center;gap:2px;border:1px solid {{ fieldBd }};background:{{ fieldBg }};border-radius:999px;padding:0 10px">
+                <span style="font-size:12px;color:var(--g300)">$</span>
+                <input type="number" value="{{ capDay }}" readOnly="{{ locked }}" onChange="{{ onCapDay }}" aria-label="Per day cap in USD" style="width:100%;min-width:0;border:0;background:transparent;outline:none;padding:5px 0;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:{{ fieldFg }}" />
+              </span>
+            </label>
+          </div>
+          <div style="font-size:11px;line-height:17px;color:var(--g400);margin-top:7px;text-wrap:pretty">{{ capsNote }}</div>
+        </div>
+      </sc-if>
+    </div>
+    <div class="auto-popwrap mini-recent">
+      <button type="button" onClick="{{ toggleRecentMini }}" title="Recents" class="mini-state" style="color:{{ recentMiniFg }};background:{{ recentMiniBg }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g class="history-arc"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></g><path d="M12 7v5l3 2"></path></svg></button>
+      <sc-if value="{{ recentMiniClosed }}" hint-placeholder-val="{{ true }}">
+        <div class="mini-hint">Recents</div>
+      </sc-if>
+      <sc-if value="{{ recentMiniOpen }}" hint-placeholder-val="{{ false }}">
+        <div class="recent-fly">
+          <div class="fly-label">Recents</div>
+          <sc-for list="{{ history }}" as="h" hint-placeholder-count="5">
+            <button onClick="{{ h.onOpen }}" class="recent-item">{{ h.title }}</button>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+    <div style="width:26px;height:1px;background:var(--g100);margin:2px 0"></div>
+    <div title="Health factor 1.82" class="num" style="font-size:12px;line-height:18px;font-weight:600;color:var(--heading)">1.82</div>
+  </div>
+
+  <div class="rail-full" style="opacity:{{ fullOp }};pointer-events:{{ fullPe }};visibility:{{ fullVis }}">
+  <div style="width:292px;display:flex;flex-direction:column;min-height:100%">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 16px 10px">
+      <span style="font-size:12px;line-height:18px;font-weight:600;color:var(--heading)">Copilot</span>
+      <button onClick="{{ toggleRail }}" title="Collapse" style="width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--g500)" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="3"></rect><path d="M9 4v16"></path></svg></button>
+    </div>
+
+    <div style="padding:0 16px 4px">
+      <button onClick="{{ newChat }}" class="rail-link"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><g class="pen-writer"><path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"></path><path d="m15 5 3 3"></path></g></svg>New chat</button>
+    </div>
+
+    <div style="padding:0 16px 10px">
+      <div class="auto-popwrap">
+        <button type="button" onClick="{{ toggleAutoMenu }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0">
+          <span style="font-size:14px;line-height:21px;font-weight:600;color:var(--heading)">Auto-approve</span>
+          <span style="display:flex;align-items:center;gap:6px;font-size:12px;line-height:18px;color:var(--g400)">{{ autoState }}<span style="display:inline-block;transform:{{ autoCaret }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg></span></span>
+        </button>
+        <sc-if value="{{ autoMenuFull }}" hint-placeholder-val="{{ false }}">
+          <div class="auto-pop">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px">
+              <span style="font-size:14px;line-height:21px;font-weight:600;color:var(--heading)">Auto-approve</span>
+              <button type="button" onClick="{{ toggleAuto }}" role="switch" aria-label="Auto-approve" style="flex:none;width:36px;height:20px;border-radius:999px;padding:2px;background:{{ autoTrack }};display:flex;justify-content:{{ autoJust }}"><span style="width:16px;height:16px;border-radius:999px;background:#ffffff;display:block"></span></button>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button onClick="{{ setDefaults }}" style="flex:1;border-radius:999px;border:1px solid {{ dfBd }};background:{{ dfBg }};color:{{ dfFg }};padding:5px 10px;font-size:12px;font-weight:600">Default</button>
+              <button onClick="{{ setCustom }}" style="flex:1;border-radius:999px;border:1px solid {{ cuBd }};background:{{ cuBg }};color:{{ cuFg }};padding:5px 10px;font-size:12px;font-weight:600">Custom</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+              <label style="display:block;min-width:0">
+                <span style="font-size:11px;line-height:17px;font-weight:600;color:var(--g400)">per tx</span>
+                <span style="margin-top:3px;display:flex;align-items:center;gap:2px;border:1px solid {{ fieldBd }};background:{{ fieldBg }};border-radius:999px;padding:0 10px">
+                  <span style="font-size:12px;color:var(--g300)">$</span>
+                  <input type="number" value="{{ capTx }}" readOnly="{{ locked }}" onChange="{{ onCapTx }}" aria-label="Per transaction cap in USD" style="width:100%;min-width:0;border:0;background:transparent;outline:none;padding:5px 0;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:{{ fieldFg }}" />
+                </span>
+              </label>
+              <label style="display:block;min-width:0">
+                <span style="font-size:11px;line-height:17px;font-weight:600;color:var(--g400)">per day</span>
+                <span style="margin-top:3px;display:flex;align-items:center;gap:2px;border:1px solid {{ fieldBd }};background:{{ fieldBg }};border-radius:999px;padding:0 10px">
+                  <span style="font-size:12px;color:var(--g300)">$</span>
+                  <input type="number" value="{{ capDay }}" readOnly="{{ locked }}" onChange="{{ onCapDay }}" aria-label="Per day cap in USD" style="width:100%;min-width:0;border:0;background:transparent;outline:none;padding:5px 0;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:{{ fieldFg }}" />
+                </span>
+              </label>
+            </div>
+            <div style="font-size:11px;line-height:17px;color:var(--g400);margin-top:7px;text-wrap:pretty">{{ capsNote }}</div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+
+    <div class="vs" style="flex:1;min-height:0;overflow-y:{{ railY }}">
+    <sc-if value="{{ hasWallet }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:4px 16px 16px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div style="font-size:14px;line-height:21px;font-weight:600;color:var(--heading)">Health factor</div>
+          <div style="flex:none;text-align:right">
+            <div class="num" style="font-size:13px;line-height:20px;font-weight:600;color:var(--heading)">1.82</div>
+            <div style="font-size:12px;line-height:18px;color:var(--paragraph)">Healthy</div>
+          </div>
+        </div>
+
+        <div>
+          <button type="button" onClick="{{ togglePositions }}" style="width:100%;display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--heading)" style-hover="color:var(--violet-500)">
+            <span style="font-size:14px;line-height:21px;font-weight:600;flex:1;text-align:left">Positions</span>
+            <span style="display:inline-flex;transform:{{ positionsCaret }};color:var(--g400)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"></path></svg></span>
+          </button>
+          <div style="display:{{ positionsDisplay }};flex-direction:column;gap:10px;padding:8px 0 2px">
+            <sc-for list="{{ positions }}" as="p" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="position:relative;width:26px;height:20px;flex:none">
+                  <img class="tok" src="{{ p.icon }}" alt="" style="position:absolute;left:0;top:0;z-index:1" />
+                  <img class="tok" src="{{ p.icon2 }}" alt="" style="position:absolute;left:8px;top:0;z-index:0;opacity:{{ p.pairOp }}" />
+                </div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:14px;line-height:21px;font-weight:600;color:var(--heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.asset }}</div>
+                  <div style="font-size:12px;line-height:18px;color:var(--paragraph)">{{ p.role }}</div>
+                </div>
+                <div style="flex:none;text-align:right">
+                  <div class="num" style="font-size:13px;line-height:20px;font-weight:600;color:var(--heading)">{{ p.amt }}</div>
+                  <div class="num" style="font-size:12px;line-height:18px;color:var(--g400)">{{ p.usd }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div>
+          <button type="button" onClick="{{ toggleRecent }}" style="width:100%;display:flex;align-items:center;gap:6px;padding:2px 0;color:var(--heading)" style-hover="color:var(--violet-500)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g class="history-arc"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></g><path d="M12 7v5l3 2"></path></svg>
+            <span style="font-size:14px;line-height:21px;font-weight:600;flex:1;text-align:left">Recents</span>
+            <span style="display:inline-flex;transform:{{ recentCaret }};color:var(--g400)"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"></path></svg></span>
+          </button>
+          <div style="padding:6px 0 4px;display:{{ recentDisplay }};flex-direction:column">
+            <sc-for list="{{ history }}" as="h" hint-placeholder-count="5">
+              <div class="recent-row {{ h.rowCls }}">
+                <sc-if value="{{ h.isRenaming }}" hint-placeholder-val="{{ false }}">
+                  <input type="text" value="{{ h.title }}" onInput="{{ h.onDraft }}" onKeyDown="{{ h.onKey }}" onBlur="{{ h.onCommit }}" aria-label="Rename chat" style="flex:1;min-width:0;margin:4px 6px;border:1px solid var(--violet-500);border-radius:6px;padding:4px 8px;font-size:14px;line-height:21px;background:var(--surface);outline:none;color:var(--heading)" />
+                </sc-if>
+                <sc-if value="{{ h.showTitle }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ h.onOpen }}" class="recent-item">{{ h.title }}</button>
+                  <button type="button" onClick="{{ h.onMore }}" class="recent-more" aria-label="Chat actions" title="More"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"></circle><circle cx="12" cy="12" r="1.8"></circle><circle cx="19" cy="12" r="1.8"></circle></svg></button>
+                </sc-if>
+                <sc-if value="{{ h.menuOpen }}" hint-placeholder-val="{{ false }}">
+                  <div class="recent-menu">
+                    <button type="button" onClick="{{ h.onRename }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>Rename</button>
+                    <button type="button" onClick="{{ h.onDelete }}" class="danger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path></svg>Delete</button>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ noWallet }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:8px 16px 16px">
+        <div style="font-size:14px;line-height:21px;font-weight:600;color:var(--heading);margin-bottom:3px">Wallet not connected</div>
+        <div style="font-size:12px;line-height:18px;color:var(--paragraph);text-wrap:pretty">Health factor and positions appear here once you connect. Hashes stay in the chat.</div>
+      </div>
+    </sc-if>
+    <div style="flex:1;min-height:8px"></div>
+    </div>
+  </div>
+  </div>
+</aside>
+
+<main class="chat-stage {{ stageCls }}" data-stage="{{ stageCls }}">
+  <div class="vs" style="min-height:0;overflow-y:auto;padding:0 20px">
+    <div style="max-width:760px;margin:0 auto">
+
+      <sc-if value="{{ isThread }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:24px 0 8px;display:flex;flex-direction:column;gap:34px">
+
+          <section id="t1" style="display:flex;flex-direction:column;gap:12px">
+            <div style="align-self:flex-end;max-width:82%;background:var(--g50);border:1px solid var(--g100);border-radius:14px;padding:9px 14px;font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">What's the difference between borrowing on Blend and margin borrowing on Vanna?</div>
+            <div>
+              <button onClick="{{ tr.t1 }}" style="display:flex;align-items:center;gap:7px;font-size:12px;line-height:18px;color:var(--g400);padding:3px 8px;margin-left:-8px;border-radius:8px" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>Checked 3 reads<span style="display:inline-block;transform:{{ car.t1 }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"></path></svg></span></button>
+              <sc-if value="{{ op.t1 }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:6px;border-left:1px solid var(--g100);padding:2px 0 2px 14px;display:flex;flex-direction:column;gap:4px">
+                  <sc-for list="{{ trace1 }}" as="s" hint-placeholder-count="3">
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                      <span style="font-size:12px;line-height:18px;color:var(--g500)">{{ s.label }}</span>
+                      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:18px;color:var(--g300);flex:none">{{ s.tool }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+            <p style="margin:0;font-size:16px;line-height:26px;color:var(--g800);text-wrap:pretty">Blend is an isolated pool: you post collateral there and borrow against it at that pool's rate, and the position stays inside the pool. Vanna margin borrows against your whole account, so the same collateral can back a Blend supply, a Soroswap LP and an open position at once.</p>
+            <div style="display:flex;gap:10px;border-top:1px solid var(--g100);padding-top:10px;font-size:12px;line-height:18px;color:var(--g500);text-wrap:pretty"><span style="color:var(--g300);flex:none">Note</span><span>Shared collateral means one liquidation can unwind more than one position. Rates move with pool utilisation.</span></div>
+          </section>
+
+          <section id="t2" style="display:flex;flex-direction:column;gap:12px">
+            <div style="align-self:flex-end;max-width:82%;background:var(--g50);border:1px solid var(--g100);border-radius:14px;padding:9px 14px;font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">Put my idle XLM to work at the best yield available.</div>
+            <p style="margin:0;font-size:16px;line-height:26px;color:var(--g800);text-wrap:pretty">Three ranked ways to put that idle balance to work. Pick one and I will stage that plan.</p>
+
+            <div style="border:1px solid var(--g100);border-left:3px solid var(--violet-500);border-radius:11px;background:var(--surface);padding:15px 18px 15px 15px">
+              <div style="display:flex;align-items:flex-start;gap:12px">
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <span style="font-size:12px;line-height:18px;font-weight:600;color:var(--violet-500)">Options</span>
+                    <span style="font-size:11px;line-height:17px;color:var(--g300)">{{ qOf }}</span>
+                    <span style="display:flex;gap:2px">
+                      <button type="button" onClick="{{ qPrev }}" title="Previous option" style="width:20px;height:20px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:{{ qPrevFg }};cursor:{{ qPrevCursor }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"></path></svg></button>
+                      <button type="button" onClick="{{ qNext }}" title="Next option" style="width:20px;height:20px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:{{ qNextFg }};cursor:{{ qNextCursor }}" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg></button>
+                    </span>
+                  </div>
+                  <div style="font-size:16px;line-height:24px;font-weight:600;color:var(--g900)">{{ qTitle }}</div>
+                  <div style="font-size:13px;line-height:20px;color:var(--g500);margin-top:2px;text-wrap:pretty">{{ qSub }}</div>
+                </div>
+                <button type="button" onClick="{{ qDismiss }}" title="Keep the top-ranked plan" style="flex:none;width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--g300)" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px">
+                <sc-for list="{{ qYield }}" as="o" hint-placeholder-count="3">
+                  <button onClick="{{ o.onPick }}" style="display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:9px 11px;border:1px solid {{ o.bd }};border-radius:8px;background:{{ o.bg }}" style-hover="border-color:var(--violet-400)">
+                    <span style="flex:none;width:18px;height:18px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:600;color:{{ o.nfg }};background:{{ o.nbg }};margin-top:1px">{{ o.n }}</span>
+                    <span style="min-width:0">
+                      <span style="display:block;font-size:14px;line-height:21px;font-weight:600;color:var(--g900)">{{ o.label }}</span>
+                      <span style="display:block;font-size:12px;line-height:18px;color:var(--g500);text-wrap:pretty">{{ o.consequence }}</span>
+                    </span>
+                  </button>
+                </sc-for>
+                <button onClick="{{ noop }}" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border:1px dashed var(--g100);border-radius:8px;color:var(--g500);font-size:13px;line-height:20px" style-hover="border-color:var(--violet-400);color:var(--violet-500)"><span style="flex:none;width:18px;height:18px;display:flex;align-items:center;justify-content:center;color:var(--g300)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg></span>Something else - type it</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;border-top:1px solid var(--g100)">
+                <span style="font-size:11px;line-height:17px;color:var(--g300)">{{ qFoot }}</span>
+                <button type="button" onClick="{{ qRun }}" style="padding:7px 16px;border-radius:8px;background:linear-gradient(135deg,#fc5457 10%,#703ae6 80%);color:#fff;font-size:13px;font-weight:600">{{ approveLabel }}</button>
+              </div>
+            </div>
+            <sc-if value="{{ staged }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid var(--g100);border-radius:11px;background:var(--surface);padding:13px 16px">
+                <div style="font-size:12px;line-height:18px;font-weight:600;color:var(--heading);margin-bottom:6px">Staged</div>
+                <div style="font-size:14px;line-height:21px;font-weight:600;color:var(--g900)">{{ pickedLabel }}</div>
+                <div style="font-size:13px;line-height:20px;color:var(--g500);margin-top:2px;text-wrap:pretty">This is the ranked option you picked. Approve runs it; the others stay on the card until you change the selection.</div>
+              </div>
+            </sc-if>
+          </section>
+
+          <section id="t3" style="display:flex;flex-direction:column;gap:12px">
+            <div style="align-self:flex-end;max-width:82%;background:var(--g50);border:1px solid var(--g100);border-radius:14px;padding:9px 14px;font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">Balanced. Deposit 100 XLM and borrow 2× BLUSDC, then supply the BLUSDC to Blend.</div>
+            <div>
+              <button onClick="{{ tr.t3 }}" style="display:flex;align-items:center;gap:7px;font-size:12px;line-height:18px;color:var(--g400);padding:3px 8px;margin-left:-8px;border-radius:8px" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>Checked 4 reads<span style="display:inline-block;transform:{{ car.t3 }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"></path></svg></span></button>
+              <sc-if value="{{ op.t3 }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:6px;border-left:1px solid var(--g100);padding:2px 0 2px 14px;display:flex;flex-direction:column;gap:4px">
+                  <sc-for list="{{ trace3 }}" as="s" hint-placeholder-count="4">
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                      <span style="font-size:12px;line-height:18px;color:var(--g500)">{{ s.label }}</span>
+                      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:18px;color:var(--g300);flex:none">{{ s.tool }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+            <p style="margin:0;font-size:16px;line-height:26px;color:var(--g800);text-wrap:pretty">The borrow costs more than the supply pays, so this leg loses money as written. Decide before I size it.</p>
+
+            <div style="border:1px solid var(--g100);border-left:3px solid var(--violet-500);border-radius:11px;background:var(--surface);padding:15px 18px 15px 15px">
+              <div style="display:flex;align-items:flex-start;gap:12px">
+                <div style="flex:1;min-width:0">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                    <span style="font-size:12px;line-height:18px;font-weight:600;color:var(--violet-500)">Required</span>
+                    <span style="font-size:11px;line-height:17px;color:var(--g300)">rates read 12 s ago</span>
+                  </div>
+                  <div style="font-size:16px;line-height:24px;font-weight:600;color:var(--g900)">This loses money at current rates</div>
+                </div>
+                <button onClick="{{ noop }}" title="Dismiss - drops the borrow leg" style="flex:none;width:24px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--g300)" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:1px;margin-top:12px;border:1px solid var(--g100);border-radius:8px;overflow:hidden;background:var(--g100)">
+                <div style="flex:1;min-width:130px;background:var(--surface);padding:10px 12px">
+                  <div style="font-size:11px;line-height:17px;color:var(--g400)">Borrow BLUSDC</div>
+                  <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:24px;line-height:32px;font-weight:600;color:var(--danger-fg)">−35.86%</div>
+                  <div style="font-size:11px;line-height:17px;color:var(--g300)">APR paid</div>
+                </div>
+                <div style="flex:1;min-width:130px;background:var(--surface);padding:10px 12px">
+                  <div style="font-size:11px;line-height:17px;color:var(--g400)">Supply to Blend</div>
+                  <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:24px;line-height:32px;font-weight:600;color:var(--ok-fg)">+1.32%</div>
+                  <div style="font-size:11px;line-height:17px;color:var(--g300)">APY earned</div>
+                </div>
+                <div style="flex:1;min-width:130px;background:var(--surface);padding:10px 12px">
+                  <div style="font-size:11px;line-height:17px;color:var(--g400)">Net on the loop</div>
+                  <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:24px;line-height:32px;font-weight:600;color:var(--danger-fg)">−34.54%</div>
+                  <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:17px;color:var(--g300)">≈ −$71.28 / yr</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:12px">
+                <sc-for list="{{ qB }}" as="o" hint-placeholder-count="3">
+                  <button onClick="{{ o.onPick }}" style="display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;padding:9px 11px;border:1px solid {{ o.bd }};border-radius:8px;background:{{ o.bg }}" style-hover="border-color:var(--violet-400)">
+                    <span style="flex:none;width:18px;height:18px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:600;color:{{ o.nfg }};background:{{ o.nbg }};margin-top:1px">{{ o.n }}</span>
+                    <span style="min-width:0">
+                      <span style="display:block;font-size:14px;line-height:21px;font-weight:600;color:var(--g900)">{{ o.label }}</span>
+                      <span style="display:block;font-size:12px;line-height:18px;color:var(--g500);text-wrap:pretty">{{ o.consequence }}</span>
+                    </span>
+                  </button>
+                </sc-for>
+                <button onClick="{{ noop }}" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 11px;border:1px dashed var(--g100);border-radius:8px;color:var(--g500);font-size:13px;line-height:20px" style-hover="border-color:var(--violet-400);color:var(--violet-500)"><span style="flex:none;width:18px;height:18px;display:flex;align-items:center;justify-content:center;color:var(--g300)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg></span>Something else - type it</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;border-top:1px solid var(--g100);font-size:11px;line-height:17px;color:var(--g300)">
+                <span>↑↓ navigate · Enter select</span>
+                <span>Dismiss drops the borrow leg</span>
+              </div>
+            </div>
+          </section>
+
+          <section id="t4" style="display:flex;flex-direction:column;gap:12px">
+            <div style="align-self:flex-end;max-width:82%;background:var(--g50);border:1px solid var(--g100);border-radius:14px;padding:9px 14px;font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">Option 3 - skip the borrow. Use the idle balance only.</div>
+            <p style="margin:0;font-size:16px;line-height:26px;color:var(--g800);text-wrap:pretty">Ready. 100 XLM goes in as collateral and the 412 BLUSDC already sitting idle goes to Blend, leaving your health factor at 1.94.</p>
+
+            <div style="border-top:1px solid var(--g100);padding-top:12px;display:flex;flex-direction:column;gap:8px">
+              <div style="font-size:12px;line-height:18px;font-weight:600;color:var(--heading)">Understood as</div>
+              <div style="font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">Deposit 100 XLM as collateral on Vanna, then supply your idle 412 BLUSDC into Blend. No borrowing.</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ legs }}" as="c" hint-placeholder-count="2">
+                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;line-height:18px;color:var(--g700);padding:3px 10px;border:1px solid var(--g100);border-radius:999px"><span style="width:5px;height:5px;border-radius:999px;background:{{ c.color }};display:block"></span>{{ c.text }}</span>
+                </sc-for>
+              </div>
+            </div>
+
+            <div style="border:1px solid var(--g100);border-radius:11px;background:var(--surface);overflow:hidden">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px solid var(--g100)">
+                <span style="font-size:14px;line-height:21px;font-weight:600;color:var(--g900)">Plan</span>
+                <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:17px;color:var(--g300)">2 operations · fee ≈ 0.00002 XLM</span>
+              </div>
+              <sc-for list="{{ plan }}" as="p" hint-placeholder-count="2">
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-top:1px solid {{ p.sep }}">
+                  <span style="flex:none;width:19px;height:19px;border-radius:8px;border:1px solid var(--g100);display:flex;align-items:center;justify-content:center;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;font-weight:600;color:var(--g400);margin-top:1px">{{ p.n }}</span>
+                  <div style="flex:1;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:20px;font-weight:600;color:var(--g900)">{{ p.op }}</span>
+                      <span style="font-size:12px;line-height:18px;color:var(--paragraph)">{{ p.venue }}</span>
+                    </div>
+                    <div style="font-size:12px;line-height:18px;color:var(--g500);text-wrap:pretty">{{ p.note }}</div>
+                  </div>
+                  <div style="flex:none;text-align:right">
+                    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:20px;color:var(--g900)">{{ p.amt }}</div>
+                    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:17px;color:var(--g300)">{{ p.usd }}</div>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--g100);background:var(--g50)">
+                <span style="font-size:12px;line-height:18px;color:var(--g500)">Health factor after <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--g900);font-weight:600">1.82 → 1.94</span></span>
+                <span style="display:flex;align-items:center;gap:8px">
+                  <button onClick="{{ noop }}" style="padding:7px 14px;border:1px solid var(--g100);border-radius:8px;font-size:13px;font-weight:600;color:var(--g800)" style-hover="border-color:var(--violet-50);background:var(--violet-50);color:var(--violet-500)">Edit</button>
+                  <button onClick="{{ noop }}" style="padding:7px 18px;border-radius:8px;background:linear-gradient(135deg,#fc5457 10%,#703ae6 80%);color:#fff;font-size:13px;font-weight:600">{{ approveLabel }}</button>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <section id="t5" style="display:flex;flex-direction:column;gap:12px">
+            <div style="align-self:flex-end;max-width:82%;background:var(--g50);border:1px solid var(--g100);border-radius:14px;padding:9px 14px;font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">Move everything into AQUSDC on Aquarius at 10× and don't ask me again.</div>
+            <p style="margin:0;font-size:16px;line-height:26px;color:var(--g800);text-wrap:pretty">I won't prepare that. 10× on a single pool puts your health factor at 1.04, below the 1.10 liquidation line, so it would be liquidatable the moment it settled.</p>
+            <div style="border:1px solid var(--g100);border-left:3px solid var(--violet-500);border-radius:11px;background:var(--surface);padding:13px 16px 13px 13px">
+              <div style="font-size:12px;line-height:18px;font-weight:600;color:var(--heading);margin-bottom:6px">What I can do instead</div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <sc-for list="{{ ways }}" as="w" hint-placeholder-count="2">
+                  <button onClick="{{ noop }}" style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:7px 9px;margin:0 -9px;border-radius:8px;color:var(--g700)" style-hover="background:var(--violet-50);color:var(--violet-500)">
+                    <span style="font-size:13px;line-height:20px">{{ w.text }}</span>
+                    <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:20px;color:var(--g400);flex:none">{{ w.hf }}</span>
+                  </button>
+                </sc-for>
+              </div>
+            </div>
+          </section>
+
+          <section id="t6" style="display:flex;flex-direction:column;gap:12px">
+            <div style="align-self:flex-end;max-width:82%;background:var(--g50);border:1px solid var(--g100);border-radius:14px;padding:9px 14px;font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">Take the 1.5× version on Blend.</div>
+            <p style="margin:0;font-size:16px;line-height:26px;color:var(--g800);text-wrap:pretty">Done - it was inside your caps, so it signed and submitted without stopping.</p>
+            <div>
+              <button onClick="{{ tr.t6 }}" style="display:flex;align-items:center;gap:7px;font-size:12px;line-height:18px;color:var(--g400);padding:3px 8px;margin-left:-8px;border-radius:8px" style-hover="background:var(--violet-50);color:var(--violet-500)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg>Run trace · 4 steps<span style="display:inline-block;transform:{{ car.t6 }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 9l6 6 6-6"></path></svg></span></button>
+              <sc-if value="{{ op.t6 }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:6px;border-left:1px solid var(--g100);padding:2px 0 2px 14px;display:flex;flex-direction:column;gap:4px">
+                  <sc-for list="{{ trace6 }}" as="s" hint-placeholder-count="4">
+                    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+                      <span style="font-size:12px;line-height:18px;color:var(--g500)">{{ s.label }}</span>
+                      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:18px;color:{{ s.fg }};flex:none">{{ s.tool }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+
+            <div style="border:1px solid var(--g100);border-radius:11px;background:var(--surface);overflow:hidden">
+              <div style="display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid var(--g100)">
+                <span style="width:7px;height:7px;border-radius:999px;background:var(--mark-ok);display:block"></span>
+                <span style="font-size:14px;line-height:21px;font-weight:600;color:var(--g900)">Settled</span>
+                <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:17px;color:var(--g300)">ledger 58214903 · 2 min ago</span>
+              </div>
+              <sc-for list="{{ receipt }}" as="r" hint-placeholder-count="2">
+                <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 14px;border-top:1px solid {{ r.sep }}">
+                  <div style="flex:1;min-width:0">
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                      <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:20px;font-weight:600;color:var(--g900)">{{ r.op }}</span>
+                      <span style="font-size:12px;line-height:18px;color:var(--paragraph)">{{ r.venue }}</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:7px;margin-top:2px">
+                      <button onClick="{{ r.onCopy }}" title="Copy hash" style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:17px;color:var(--g400);display:flex;align-items:center;gap:4px" style-hover="color:var(--g900)">{{ r.hash }}<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h8"></path></svg></button>
+                      <a href="{{ r.url }}" target="_blank" rel="noreferrer" style="display:flex;color:var(--g300)" style-hover="color:var(--violet-500)"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 4h6v6M20 4l-8 8M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg></a>
+                    </div>
+                  </div>
+                  <div style="flex:none;text-align:right">
+                    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:20px;color:var(--g900)">{{ r.amt }}</div>
+                    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:17px;color:var(--g300)">{{ r.usd }}</div>
+                  </div>
+                </div>
+              </sc-for>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--g100);background:var(--g50);font-size:12px;line-height:18px;color:var(--g500)">
+                <span>Signer <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--g900)">GD4BQR…NPDH</span></span>
+                <span>Health factor <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--g900);font-weight:600">1.82</span></span>
+              </div>
+            </div>
+          </section>
+
+          <section id="t7" style="display:flex;flex-direction:column;gap:12px">
+            <div style="align-self:flex-end;max-width:82%;background:var(--g50);border:1px solid var(--g100);border-radius:14px;padding:9px 14px;font-size:14px;line-height:21px;color:var(--g800);text-wrap:pretty">What would my health factor be if XLM dropped 20%?</div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;line-height:18px;color:var(--g500);padding:3px 0">
+              <span style="width:12px;height:12px;border-radius:999px;border:1.5px solid var(--g100);border-top-color:var(--violet-500);display:block;animation:vsp .8s linear infinite"></span>
+              <span>Reading oracle prices</span>
+              <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--g300)">vanna_get_prices_batch</span>
+            </div>
+            <div style="border-left:1px solid var(--g100);padding:2px 0 2px 14px;display:flex;flex-direction:column;gap:4px">
+              <sc-for list="{{ trace7 }}" as="s" hint-placeholder-count="2">
+                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;opacity:{{ s.o }}">
+                  <span style="font-size:12px;line-height:18px;color:var(--g500)">{{ s.label }}</span>
+                  <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:18px;color:var(--g300);flex:none">{{ s.tool }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <div style="padding:8px 20px 18px">
+    <div style="max-width:680px;margin:0 auto">
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+        <div class="hero-copy" style="text-align:center;margin-bottom:16px">
+          <div style="font-size:28px;line-height:42px;font-weight:600;color:var(--heading)">What's the next move?</div>
+          <div style="font-size:16px;line-height:24px;color:var(--paragraph);margin-top:6px">Read the book, size a plan, or run a change.</div>
+        </div>
+      </sc-if>
+      <div style="display:flex;align-items:flex-end;gap:8px;border:1px solid var(--g100);border-radius:28px;padding:8px 8px 8px 18px;background:var(--surface)">
+        <textarea rows="1" placeholder="Ask about a position, or describe a change" onKeyDown="{{ onComposeKey }}" style="flex:1;min-width:0;border:0;outline:none;resize:none;background:transparent;font-size:14px;line-height:21px;font-family:inherit;padding:10px 0"></textarea>
+        <button onClick="{{ run }}" aria-label="Send" style="flex:none;width:36px;height:36px;border-radius:999px;background:var(--gradient);color:#fff;display:flex;align-items:center;justify-content:center" style-hover="opacity:.92"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="m5 12 7-7 7 7"></path></svg></button>
+      </div>
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ true }}">
+        <div class="chip-row" style="padding-top:8px">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3">
+              <button onClick="{{ c.onRun }}" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px;padding:10px 6px;font-size:14px;line-height:21px;color:var(--paragraph);border-radius:8px" style-hover="background:var(--g50);color:var(--heading)">{{ c.text }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isThread }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:12px;line-height:18px;color:var(--g400);margin-top:8px">{{ composerHint }}</div>
+      </sc-if>
+    </div>
+  </div>
+  <div></div>
+</main>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;autoApprove&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;capsMode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;defaults&quot;,&quot;custom&quot;],&quot;default&quot;:&quot;defaults&quot;,&quot;tsType&quot;:&quot;'defaults'|'custom'&quot;},&quot;walletConnected&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;panelCollapsed&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = {
+    theme: null, collapsed: null, auto: null, wallet: null, empty: true,
+    caps: null, capTx: '500', capDay: '2000',
+    recentOpen: true, positionsOpen: true, histMenu: null, renaming: null, histDraft: '',
+    history: [
+      { id: 'h1', title: 'XLM yield on idle balance' },
+      { id: 'h2', title: 'Blend vs Vanna margin borrow' },
+      { id: 'h3', title: 'Close the SOUSDC LP' },
+      { id: 'h4', title: 'Why did my health factor drop?' },
+      { id: 'h5', title: 'Fee on a 2× BLUSDC borrow' }
+    ],
+    open: { t1: false, t3: false, t6: false },
+    pickA: 1, pickB: 2, autoMenu: false, recentMini: false, walletMenu: false, copied: null, staged: false
+  };
+
+  t(k) { this.setState(s => ({ open: Object.assign({}, s.open, { [k]: !s.open[k] }) })); }
+  copy(h) {
+    try { navigator.clipboard.writeText(h); } catch (e) {}
+    this.setState({ copied: h });
+    clearTimeout(this._ct);
+    this._ct = setTimeout(() => this.setState({ copied: null }), 1400);
+  }
+
+  commitRename(id) {
+    const title = String(this.state.histDraft || '').trim();
+    this.setState(s => ({
+      renaming: null,
+      histDraft: '',
+      history: s.history.map(h => h.id === id ? Object.assign({}, h, { title: title || h.title }) : h)
+    }));
+  }
+
+  renderVals() {
+    const P = this.props, S = this.state;
+    const theme = S.theme ?? (P.theme || 'light');
+    const collapsed = S.collapsed ?? (P.panelCollapsed ?? false);
+    const auto = S.auto ?? (P.autoApprove ?? true);
+    const wallet = S.wallet ?? (P.walletConnected ?? true);
+    const caps = S.caps ?? (P.capsMode || 'defaults');
+    const dark = theme === 'dark';
+    const custom = caps === 'custom';
+
+    const DEF_TX = 500, DEF_DAY = 2000;
+
+    const V = {
+      Margin: { fg: 'var(--heading)', bg: 'transparent' },
+      Earn:   { fg: 'var(--heading)', bg: 'transparent' },
+      Farm:   { fg: 'var(--heading)', bg: 'transparent' }
+    };
+    const sep = i => (i === 0 ? 'transparent' : 'var(--g100)');
+    const pill = on => ({
+      bd: on ? 'var(--violet-500)' : 'var(--g100)',
+      bg: on ? 'var(--violet-50)' : 'transparent',
+      fg: on ? 'var(--violet-500)' : 'var(--g800)'
+    });
+    const df = pill(!custom), cu = pill(custom);
+
+    const hist = (S.history || []).map(h => {
+      const isRenaming = S.renaming === h.id;
+      const menuOpen = S.histMenu === h.id && !isRenaming;
+      return {
+        id: h.id,
+        title: isRenaming ? S.histDraft : h.title,
+        isRenaming,
+        showTitle: !isRenaming,
+        menuOpen,
+        rowCls: menuOpen ? 'is-menu' : '',
+        onOpen: () => this.setState({ empty: false, histMenu: null, renaming: null, recentMini: false }),
+        onMore: e => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          this.setState({ histMenu: S.histMenu === h.id ? null : h.id, renaming: null, autoMenu: false });
+        },
+        onRename: e => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          this.setState({ renaming: h.id, histDraft: h.title, histMenu: null });
+        },
+        onDelete: e => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          this.setState(s => ({
+            histMenu: null,
+            history: s.history.filter(x => x.id !== h.id)
+          }));
+        },
+        onDraft: e => this.setState({ histDraft: e.target.value }),
+        onKey: e => {
+          if (!e) return;
+          if (e.key === 'Enter') { if (e.preventDefault) e.preventDefault(); this.commitRename(h.id); }
+          if (e.key === 'Escape') this.setState({ renaming: null, histDraft: '' });
+        },
+        onCommit: () => this.commitRename(h.id)
+      };
+    });
+
+    const money = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const ICO = { XLM: 'assets/coins/xlmbg.png', USDC: 'assets/coins/usdc-icon.svg' };
+    const row = (p) => Object.assign({}, p, {
+      usd: money(p.usdN),
+      icon2: p.icon2 || p.icon,
+      pairOp: p.icon2 ? '1' : '0'
+    });
+    const positionsOpen = S.positionsOpen !== false;
+    const positions = [
+      row({ asset: 'XLM', role: 'Margin · Collateral', amt: '4,820.00', usdN: 1428.72, icon: ICO.XLM }),
+      row({ asset: 'BLUSDC', role: 'Margin · Borrowed', amt: '620.00', usdN: 620, icon: ICO.USDC }),
+      row({ asset: 'BLUSDC', role: 'Earn · Lent', amt: '250.00', usdN: 250, icon: ICO.USDC }),
+      row({ asset: 'BLUSDC', role: 'Farm · Supplied', amt: '412.00', usdN: 412.04, icon: ICO.USDC }),
+      row({ asset: 'XLM / SOUSDC', role: 'Farm · LP', amt: '1.284', usdN: 308.04, icon: ICO.XLM, icon2: ICO.USDC }),
+      row({ asset: 'AQUSDC', role: 'Farm · Staked', amt: '180.00', usdN: 180.02, icon: ICO.USDC })
+    ];
+    const st = {
+      settled:   { dot: 'var(--mark-ok)',  fg: 'var(--ok-fg)',     anim: 'none' },
+      failed:    { dot: 'var(--mark-bad)', fg: 'var(--danger-fg)', anim: 'none' },
+      submitted: { dot: 'var(--g300)',     fg: 'var(--g500)',      anim: 'vpl 1.4s ease-in-out infinite' },
+      signing:   { dot: 'var(--g300)',     fg: 'var(--g500)',      anim: 'vpl 1.4s ease-in-out infinite' },
+      staged:    { dot: 'var(--g200)',     fg: 'var(--g400)',      anim: 'none' }
+    };
+
+    const ledger = [
+      { op: 'deposit_collateral XLM', venue: 'Margin', amt: '100.00 XLM', usd: '$29.64', status: 'submitted', hash: '7b02de4419…', time: '18 s ago', abs: '21 Sep 2026, 14:04:46 UTC', turn: 't4' },
+      { op: 'supply BLUSDC', venue: 'Farm', amt: '412.00 BLUSDC', usd: '$412.04', status: 'settled', hash: 'ce7856c845…', time: '2 min ago', abs: '21 Sep 2026, 14:02:11 UTC', turn: 't6' },
+      { op: 'borrow 1.5× BLUSDC', venue: 'Margin', amt: '620.00 BLUSDC', usd: '$620.00', status: 'settled', hash: 'a19f30b7d2…', time: '2 min ago', abs: '21 Sep 2026, 14:02:04 UTC', turn: 't6' },
+      { op: 'swap XLM → SOUSDC', venue: 'Farm', amt: '250.00 XLM', usd: '$74.10', status: 'failed', hash: '3fd6a8c011…', time: '41 min ago', abs: '21 Sep 2026, 13:23:30 UTC', turn: 't4' },
+      { op: 'stake AQUSDC', venue: 'Farm', amt: '180.00 AQUSDC', usd: '$180.02', status: 'settled', hash: 'd84c1e9a67…', time: '3 h ago', abs: '21 Sep 2026, 11:10:58 UTC', turn: 't6' }
+    ].map((l, i) => Object.assign({}, l, {
+      sep: sep(i), dot: st[l.status].dot, sfg: st[l.status].fg, anim: st[l.status].anim,
+      vfg: V[l.venue].fg, vbg: V[l.venue].bg,
+      url: 'https://stellar.expert/explorer/public/tx/' + l.hash.replace('…', ''),
+      onGo: () => { const el = document.getElementById(l.turn); if (el && el.scrollIntoViewIfNeeded) el.scrollIntoViewIfNeeded(); },
+      onCopy: e => { if (e && e.stopPropagation) e.stopPropagation(); this.copy(l.hash); }
+    }));
+
+    const mkOpts = (arr, picked, key, extra) => arr.map((o, i) => {
+      const on = picked === i + 1;
+      return {
+        n: String(i + 1), label: o[0], consequence: o[1],
+        bd: on ? 'var(--violet-500)' : 'var(--g100)',
+        bg: on ? 'var(--violet-50)' : 'transparent',
+        nfg: on ? '#ffffff' : 'var(--g400)',
+        nbg: on ? 'var(--violet-500)' : 'var(--g50)',
+        onPick: () => this.setState(Object.assign({ [key]: i + 1 }, extra || {}))
+      };
+    });
+
+    const qN = 3;
+    const pickA = S.pickA || 1;
+    const qYield = mkOpts([
+      ['Lend idle BLUSDC to Earn', '25.41% APY · already held · no new borrowing'],
+      ['Supply idle BLUSDC to Blend', '1.32% APY · already held · no new borrowing'],
+      ['Borrow BLUSDC and supply to Blend', '6.0% net · uses headroom · health factor after 1.50']
+    ], pickA, 'pickA');
+
+    const qB = mkOpts([
+      ['Prepare it anyway', 'I accept the -34.54% carry on the borrowed leg'],
+      ['Use a smaller amount', 'Cap the borrow at 200 BLUSDC - loss drops to about -$23 / yr'],
+      ['Skip the borrow', 'Supply only the 412 BLUSDC already idle - no carry']
+    ], S.pickB, 'pickB');
+
+    const plan = [
+      { n: '1', op: 'deposit_collateral', venue: 'Margin', note: 'Locks XLM as account collateral', amt: '100.00 XLM', usd: '$29.64' },
+      { n: '2', op: 'supply', venue: 'Farm', note: 'Idle balance into the BLUSDC pool at 1.32% APY', amt: '412.00 BLUSDC', usd: '$412.04' }
+    ].map((p, i) => Object.assign({}, p, { sep: sep(i), vfg: V[p.venue].fg, vbg: V[p.venue].bg }));
+
+    const receipt = [
+      { op: 'borrow 1.5× BLUSDC', venue: 'Margin', amt: '620.00 BLUSDC', usd: '$620.00', hash: 'a19f30b7d2…' },
+      { op: 'supply BLUSDC', venue: 'Farm', amt: '412.00 BLUSDC', usd: '$412.04', hash: 'ce7856c845…' }
+    ].map((r, i) => Object.assign({}, r, {
+      sep: sep(i), vfg: V[r.venue].fg, vbg: V[r.venue].bg,
+      url: 'https://stellar.expert/explorer/public/tx/' + r.hash.replace('…', ''),
+      onCopy: () => this.copy(r.hash)
+    }));
+
+    const run = () => this.setState({ empty: false });
+    const onComposeKey = e => {
+      if (!e || e.key !== 'Enter' || e.shiftKey) return;
+      if (e.preventDefault) e.preventDefault();
+      run();
+    };
+    const chips = [
+      { text: 'Price of XLM', onRun: run },
+      { text: "What's my health factor?", onRun: run },
+      { text: 'Deposit 5 XLM', onRun: run }
+    ];
+    const empty = !!S.empty;
+
+    return {
+      theme, collapsed, expanded: !collapsed, auto,
+      hasWallet: wallet, noWallet: !wallet,
+      isEmpty: empty, isThread: !empty,
+      stageCls: empty ? 'is-empty' : 'is-thread',
+      railCls: collapsed ? 'is-collapsed' : 'is-expanded',
+      railOverflow: 'visible',
+      railY: S.histMenu ? 'visible' : 'auto',
+      fullOp: collapsed ? '0' : '1',
+      fullPe: collapsed ? 'none' : 'auto',
+      fullVis: collapsed ? 'hidden' : 'visible',
+      miniOp: collapsed ? '1' : '0',
+      miniPe: collapsed ? 'auto' : 'none',
+      miniVis: collapsed ? 'visible' : 'hidden',
+      autoMenuFull: !collapsed && !!S.autoMenu,
+      autoMenuMini: collapsed && !!S.autoMenu,
+      recentMiniOpen: collapsed && !!S.recentMini,
+      recentMiniClosed: collapsed && !S.recentMini,
+      recentMiniFg: S.recentMini ? 'var(--violet-500)' : 'var(--g500)',
+      recentMiniBg: S.recentMini ? 'var(--violet-50)' : 'transparent',
+      logoSrc: dark ? 'assets/logos/vanna-white.png' : 'assets/logos/vanna.png',
+
+      toggleTheme: () => this.setState({ theme: dark ? 'light' : 'dark' }),
+      toggleRail: () => this.setState({ collapsed: !collapsed, autoMenu: false, histMenu: null, recentMini: false }),
+      toggleAuto: () => this.setState({ auto: !auto }),
+      toggleAutoMenu: () => this.setState({ autoMenu: !S.autoMenu, walletMenu: false, recentMini: false }),
+      toggleWalletMenu: () => this.setState({ walletMenu: !S.walletMenu, autoMenu: false }),
+      togglePositions: () => this.setState({ positionsOpen: !positionsOpen }),
+      toggleRecent: () => this.setState({ recentOpen: !S.recentOpen, histMenu: null }),
+      toggleRecentMini: () => this.setState({ recentMini: !S.recentMini, autoMenu: false, histMenu: null }),
+      newChat: () => this.setState({ empty: true, staged: false, histMenu: null, renaming: null }),
+      connect: () => this.setState({ wallet: true }),
+      run, onComposeKey,
+      noop: () => {},
+
+      positionsOpen,
+      positionsDisplay: positionsOpen ? 'flex' : 'none',
+      positionsCaret: positionsOpen ? 'rotate(180deg)' : 'none',
+      recentOpen: S.recentOpen,
+      recentDisplay: S.recentOpen ? 'flex' : 'none',
+      recentCaret: S.recentOpen ? 'rotate(180deg)' : 'none',
+      recentCount: String(hist.length),
+
+      autoMenu: !!S.autoMenu,
+      walletMenu: !!S.walletMenu,
+      autoCaret: S.autoMenu ? 'rotate(180deg)' : 'none',
+      autoState: auto ? 'On' : 'Off',
+      autoSub: auto ? 'Signs inside the caps in this menu.' : 'Every write waits for your signature',
+      autoTitle: auto ? 'Auto-approve on' : 'Auto-approve off',
+      autoTrack: auto ? 'var(--violet-500)' : 'var(--g100)',
+      autoJust: auto ? 'flex-end' : 'flex-start',
+      autoIcoFg: S.autoMenu ? 'var(--violet-500)' : 'var(--g500)',
+      autoIcoBg: S.autoMenu ? 'var(--violet-50)' : 'transparent',
+      themeTrack: dark ? 'var(--violet-500)' : 'var(--g100)',
+      themeJust: dark ? 'flex-end' : 'flex-start',
+      approveLabel: auto ? 'Approve' : 'Sign & execute',
+      composerHint: auto
+        ? 'Auto-approve on · writes inside the limits run without a prompt'
+        : 'Auto-approve off · every write asks for a signature',
+
+      setDefaults: () => this.setState({ caps: 'defaults' }),
+      setCustom: () => this.setState({ caps: 'custom' }),
+      dfBd: df.bd, dfBg: df.bg, dfFg: df.fg,
+      cuBd: cu.bd, cuBg: cu.bg, cuFg: cu.fg,
+      locked: !custom,
+      capTx: custom ? S.capTx : String(DEF_TX),
+      capDay: custom ? S.capDay : String(DEF_DAY),
+      fieldBd: 'var(--g100)',
+      fieldBg: custom ? 'transparent' : 'var(--g50)',
+      fieldFg: custom ? 'var(--g900)' : 'var(--g400)',
+      capsNote: custom ? 'Your limits. Anything above them still asks for a signature.' : 'Protocol defaults - read only. Switch to Custom to set your own.',
+      onCapTx: e => this.setState({ capTx: e.target.value }),
+      onCapDay: e => this.setState({ capDay: e.target.value }),
+
+      copyHint: S.copied ? 'hash copied' : 'newest first',
+
+      history: hist, positions, plan, receipt, qB, qYield, chips,
+      qOf: pickA + ' of ' + qN,
+      qTitle: 'Which of these should I run?',
+      qSub: 'These are the ranked plans from the rates I just read. Selecting one stages that plan.',
+      qPrevFg: pickA > 1 ? 'var(--g400)' : 'var(--g200)',
+      qPrevCursor: pickA > 1 ? 'pointer' : 'default',
+      qNextFg: pickA < qN ? 'var(--g400)' : 'var(--g200)',
+      qNextCursor: pickA < qN ? 'pointer' : 'default',
+      qPrev: () => { if (pickA > 1) this.setState({ pickA: pickA - 1 }); },
+      qNext: () => { if (pickA < qN) this.setState({ pickA: pickA + 1 }); },
+      qDismiss: () => this.setState({ pickA: 1, staged: false }),
+      qRun: () => this.setState({ staged: true }),
+      staged: !!S.staged,
+      pickedLabel: qYield[pickA - 1] ? qYield[pickA - 1].label : qYield[0].label,
+      qFoot: S.staged ? 'Option ' + pickA + ' staged' : 'Enter stages the selected plan',
+
+      legs: [
+        { text: 'deposit 100 XLM as collateral', color: 'var(--vm-fg)' },
+        { text: 'supply 412 BLUSDC into Blend', color: 'var(--ve-fg)' }
+      ],
+      ways: [
+        { text: '2× on Blend, spread across BLUSDC and SOUSDC', hf: 'HF 1.62' },
+        { text: '3× on Aquarius with a stop at your 1.30 floor', hf: 'HF 1.34' }
+      ],
+
+      trace1: [
+        { label: 'Read Blend pool terms', tool: 'vanna_get_blend_reserve_stats' },
+        { label: 'Read Vanna margin parameters', tool: 'vanna_get_pool_stats' },
+        { label: 'Compared collateral treatment', tool: 'page_assist' }
+      ],
+      trace3: [
+        { label: 'Read wallet balances', tool: 'vanna_get_wallet_balance' },
+        { label: 'Read BLUSDC borrow rate', tool: 'vanna_get_pool_stats' },
+        { label: 'Read Blend supply rate', tool: 'vanna_get_blend_reserve_stats' },
+        { label: 'Sized against your floor', tool: 'vanna_get_max_borrow' }
+      ],
+      trace6: [
+        { label: 'Intent parsed', tool: 'parse_intent', fg: 'var(--g300)' },
+        { label: 'Transaction built', tool: 'vanna_open_account', fg: 'var(--g300)' },
+        { label: 'Risk gate', tool: 'allow', fg: 'var(--ok-fg)' },
+        { label: 'Signed and submitted', tool: 'signed_and_submitted', fg: 'var(--ok-fg)' }
+      ],
+      trace7: [
+        { label: 'Read oracle prices', tool: 'vanna_get_prices_batch', o: '1' },
+        { label: 'Reprice collateral', tool: 'vanna_get_account_health', o: '.4' }
+      ],
+
+      tr: { t1: () => this.t('t1'), t3: () => this.t('t3'), t6: () => this.t('t6') },
+      op: { t1: S.open.t1, t3: S.open.t3, t6: S.open.t6 },
+      car: {
+        t1: S.open.t1 ? 'rotate(180deg)' : 'none',
+        t3: S.open.t3 ? 'rotate(180deg)' : 'none',
+        t6: S.open.t6 ? 'rotate(180deg)' : 'none'
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
